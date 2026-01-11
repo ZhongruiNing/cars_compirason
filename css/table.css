@@ -1,0 +1,95 @@
+/* 横向滚动：表格超出页面宽度时显示左右滚动条 */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+table {
+    /* 宽度由列宽决定，不随视口缩放 */
+    width: max-content;
+    max-width: none;
+
+    /* 列宽（后续只要改变量即可，不需要改其它规则） */
+    --col-param-width: 150px;
+    --col-car-width: 170px;
+
+    /* sticky 更稳定 */
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+/* 每一列固定宽度（可增删 col.col-car，不需要改 CSS） */
+table col.col-param { width: var(--col-param-width); }
+table col.col-car { width: var(--col-car-width); }
+
+table th,
+table td {
+    padding: 8px 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+/* ========== 冻结前三行（品牌 / 系列 / 型号）========== */
+/* 使用固定行高来计算 top 偏移（简单可靠） */
+table tr:nth-of-type(-n+3) th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background-color: #f0f0f0;
+    height: 44px;
+}
+
+table tr:nth-of-type(2) th {
+    top: 44px;
+}
+
+table tr:nth-of-type(3) th {
+    top: 88px;
+}
+
+/* ========== 冻结第一列（参数名列 + 顶部三行的第一列）========== */
+td.param-name {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background-color: #fafafa;
+}
+
+/* 左上角交叉：前三行的第一列同时置顶+置左，层级最高 */
+table tr:nth-of-type(-n+3) th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+}
+
+/* ========== 参数名列分段着色（不包含前三行表头）========== */
+/* 参数区从第 4 行开始：第 4~9 行（共 6 行） */
+table tr:nth-of-type(n+4):nth-of-type(-n+9) td.param-name {
+    background-color: #ffcccc;
+}
+
+/* 第 10~23 行（共 14 行，对应第 7~20 行参数） */
+table tr:nth-of-type(n+10):nth-of-type(-n+29) td.param-name {
+    background-color: #ccffcc;
+}
+
+/* 第 24 行及以后（第 21 行参数起） */
+table tr:nth-of-type(n+30) td.param-name {
+    background-color: #cce0ff;
+}
+
+/* 第一列（参数名）字体加粗 */
+.param-name {
+    width: var(--col-param-width);
+    font-weight: bold;
+}
